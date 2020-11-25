@@ -7,3 +7,13 @@ variable "ip_whitelist" {
   type        = list(string)
   default     = [""]
 }
+
+variable "servers_subnet_cidr" {
+    description = "CIDR to use for the Servers subnet"
+    default = "192.168.10.0/24"
+}
+
+variable "workstations_subnet_cidr" {
+    description = "CIDR to use for the Workstations subnet"
+    default = "192.168.20.0/24"
+}
