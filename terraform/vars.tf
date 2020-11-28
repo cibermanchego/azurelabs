@@ -17,3 +17,27 @@ variable "workstations_subnet_cidr" {
     description = "CIDR to use for the Workstations subnet"
     default = "192.168.20.0/24"
 }
+
+variable "logger_admin_user" {
+    description = "Name of the initial admin user on the logger box"
+    # default username
+    default = "loggeradmin"
+}
+
+variable "public_key_name" {
+  description = "A name for SSH Keypair to use to auth to logger. Can be anything you specify."
+  default     = "id_logger"
+}
+
+variable "public_key_path" {
+  description = "Path to the public key to be loaded into the logger authorized_keys file"
+  type        = string
+  default     = "/home/user/.ssh/id_logger.pub"
+}
+
+# Note: must use ssh key without passphrase. not supported by Terraform.
+variable "private_key_path" {
+  description = "Path to the private key to use to authenticate to logger."
+  type        = string
+  default     = "/home/user/.ssh/id_logger"
+}

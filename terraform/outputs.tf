@@ -22,3 +22,10 @@ output "ws_public_ip" {
 output "ws_password" {
   value = random_password.ws_password.result
 }
+
+output "logger_public_ip" {
+  value = azurerm_public_ip.ws_public_ip.ip_address
+}
+output "logger_password" {
+  value = random_password.ws_password.result
+}

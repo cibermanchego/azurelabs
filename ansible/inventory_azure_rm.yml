@@ -1,0 +1,13 @@
+plugin: azure_rm
+auth_source: cli
+# our resource group
+include_vm_resource_groups:
+- ncisglab-terraform
+conditional_groups:
+  domain_controller: "tags.role == 'domain-controller'"
+  workstations: "tags.role == 'workstation'"
+  logger: "tags.role == 'logger'"
+  collector: "tags.role == 'wef'"
+keyed_groups:
+- prefix: tag
+  key: tags

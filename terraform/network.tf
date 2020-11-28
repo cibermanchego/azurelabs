@@ -43,18 +43,18 @@ resource "azurerm_network_security_group" "ncisglab_servers_nsg" {
     destination_address_prefix = "*"
   }
 
-  # Splunk access
- # security_rule {
-#    name                       = "Splunk"
-#    priority                   = 1002
-#    direction                  = "Inbound"
-#    access                     = "Allow"
-#    protocol                   = "Tcp"
-#    source_port_range          = "*"
-#    destination_port_range     = "8000"
-#    source_address_prefixes    = var.ip_whitelist
-#    destination_address_prefix = "*"
-#  }
+#   Splunk access
+  security_rule {
+    name                       = "Splunk"
+    priority                   = 1002
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "8000"
+    source_address_prefixes    = var.ip_whitelist
+    destination_address_prefix = "*"
+  }
 
   # RDP
   security_rule {
