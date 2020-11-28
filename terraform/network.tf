@@ -1,3 +1,6 @@
+#All common network resources are declared here
+# Virtual network - Subnets - Network security Group - Network Security Group associations
+#TODO Configure a 3 subnet and network security group for Logger. configure communication from server subnet to workstation subnet, currently is allow all
 # Virtual network 192.168.0.0/16
 resource "azurerm_virtual_network" "intnet" {
   name                = "internal_network"
@@ -28,6 +31,20 @@ resource "azurerm_network_security_group" "ncisglab_servers_nsg" {
   name                = "NCISGLab_servers_nsg"
   location = var.region
   resource_group_name  = azurerm_resource_group.ncisglab.name
+
+  # SSH access
+  security_rule {
+    name                       = "ICMP"
+    priority                   = 1001
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "ICMP"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    # source_address_prefix      = "*"
+    source_address_prefixes    = var.ip_whitelist
+    destination_address_prefix = "*"
+  }
 
   # SSH access
   security_rule {
@@ -122,20 +139,6 @@ resource "azurerm_network_security_group" "ncisglab_workstations_nsg" {
   location = var.region
   resource_group_name  = azurerm_resource_group.ncisglab.name
 
-  # SSH access
-  security_rule {
-    name                       = "SSH"
-    priority                   = 1001
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    # source_address_prefix      = "*"
-    source_address_prefixes    = var.ip_whitelist
-    destination_address_prefix = "*"
-  }
-
    # RDP
   security_rule {
     name                       = "RDP"
@@ -182,3 +185,39 @@ resource "azurerm_subnet_network_security_group_association" "ncisglab_workstati
   subnet_id                 = azurerm_subnet.ncisglab_workstations.id
   network_security_group_id = azurerm_network_security_group.ncisglab_workstations_nsg.id
 }
+
+
+
+# # Network security group for logger machine
+# resource "azurerm_network_security_group" "ncisglab_logger_nsg" {
+#   name                = "NCISGLab_logger_nsg"
+#   location = var.region
+#   resource_group_name  = azurerm_resource_group.ncisglab.name
+
+#   # SSH access
+#   security_rule {
+#     name                       = "SSH"
+#     priority                   = 1001
+#     direction                  = "Inbound"
+#     access                     = "Allow"
+#     protocol                   = "Tcp"
+#     source_port_range          = "*"
+#     destination_port_range     = "22"
+#     # source_address_prefix      = "*"
+#     source_address_prefixes    = var.ip_whitelist
+#     destination_address_prefix = "*"
+#   }
+
+# #   Splunk access
+#   security_rule {
+#     name                       = "Splunk"
+#     priority                   = 1002
+#     direction                  = "Inbound"
+#     access                     = "Allow"
+#     protocol                   = "Tcp"
+#     source_port_range          = "*"
+#     destination_port_range     = "8000"
+#     source_address_prefixes    = var.ip_whitelist
+#     destination_address_prefix = "*"
+#   }
+# }

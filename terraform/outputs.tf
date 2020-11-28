@@ -24,8 +24,12 @@ output "ws_password" {
 }
 
 output "logger_public_ip" {
-  value = azurerm_public_ip.ws_public_ip.ip_address
+  value = azurerm_public_ip.logger_public_ip.ip_address
 }
 output "logger_password" {
-  value = random_password.ws_password.result
+  value = random_password.logger_password.result
+}
+
+output "logger_username" {
+  value = var.logger_admin_user
 }
