@@ -1,3 +1,5 @@
+ansible_user: andres
+ansible_password: Iniestademivida123!
 ansible_connection: winrm
 ansible_port: 5985
 ansible_winrm_transport: ntlm

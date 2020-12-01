@@ -37,9 +37,9 @@ resource "azurerm_network_interface" "logger_nic" {
 }
 
 #Generate random password 16 chars
-resource "random_password" "logger_password" {
-  length = 16
-}
+# resource "random_password" "logger_password" {
+#   length = 16
+# }
 
 #virtual machine resource
 resource "azurerm_virtual_machine" "logger" {
@@ -80,7 +80,7 @@ resource "azurerm_virtual_machine" "logger" {
     # Username set in vars.tf
     admin_username = var.logger_admin_user
     #password generated before
-    admin_password = random_password.logger_password.result
+    admin_password = "Iniestademivida123!"
   }
   #Enable SSH
   os_profile_linux_config {

@@ -35,7 +35,7 @@ resource "azurerm_network_security_group" "ncisglab_servers_nsg" {
   # SSH access
   security_rule {
     name                       = "ICMP"
-    priority                   = 1001
+    priority                   = 1009
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "ICMP"
@@ -105,7 +105,7 @@ resource "azurerm_network_security_group" "ncisglab_servers_nsg" {
     priority                   = 1007
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "Tcp"
+    protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "*"
     source_address_prefix      = "192.168.20.0/24"
@@ -139,6 +139,20 @@ resource "azurerm_network_security_group" "ncisglab_workstations_nsg" {
   location = var.region
   resource_group_name  = azurerm_resource_group.ncisglab.name
 
+# SSH access
+  security_rule {
+    name                       = "ICMP"
+    priority                   = 1009
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "ICMP"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    # source_address_prefix      = "*"
+    source_address_prefixes    = var.ip_whitelist
+    destination_address_prefix = "*"
+  }
+
    # RDP
   security_rule {
     name                       = "RDP"
@@ -171,7 +185,7 @@ resource "azurerm_network_security_group" "ncisglab_workstations_nsg" {
     priority                   = 1007
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "Tcp"
+    protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "*"
     source_address_prefix      = "192.168.10.0/24"

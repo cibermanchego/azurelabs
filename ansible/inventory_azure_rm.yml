@@ -1,8 +1,11 @@
-plugin: azure_rm
-auth_source: cli
+#plugin must be referenced with full name from collection
+plugin: azure.azcollection.azure_rm
+auth_source: credential_file
+# plain_host_names: yes
 # our resource group
 include_vm_resource_groups:
 - ncisglab-terraform
+
 conditional_groups:
   domain_controller: "tags.role == 'domain-controller'"
   workstations: "tags.role == 'workstation'"
@@ -11,3 +14,4 @@ conditional_groups:
 keyed_groups:
 - prefix: tag
   key: tags
+
