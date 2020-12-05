@@ -6,18 +6,12 @@ output "dc_public_ip" {
 #   value = random_password.domain_controller_password.result
 # }
 
-output "ws_public_ip" {
-  value = azurerm_public_ip.ws_public_ip.ip_address
+#Output all public IPs of WS created
+output "ws_public_ips" {
+  value = azurerm_public_ip.ws_public_ip.*.ip_address
 }
 output "logger_public_ip" {
   value = azurerm_public_ip.logger_public_ip.ip_address
-}
-# output "logger_password" {
-#   value = random_password.logger_password.result
-# }
-
-output "logger_username" {
-  value = var.logger_admin_user
 }
 
 output "what_next" {
@@ -33,6 +27,10 @@ output "what_next" {
 
 EOF
 }
+
+# output "logger_username" {
+#   value = var.logger_admin_user
+# }
 #output "dc_user" {
 #  value = azurerm_virtual_machine.domain_controller.admin_username
 #}

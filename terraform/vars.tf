@@ -7,6 +7,11 @@ variable "ip_whitelist" {
   type        = list(string)
   default     = [""]
 }
+variable "num_ws" {
+  description = "Number of workstations to create"
+  type = number
+  default = 1
+}
 
 variable "servers_subnet_cidr" {
     description = "CIDR to use for the Servers subnet"

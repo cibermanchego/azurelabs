@@ -28,7 +28,7 @@
   #     ansible_password: "{{ domain_admin_password }}"
   #   when: "packer is not defined"
   #   tags: common
-  - name: Ensure necessary Microsoft features are installed
+  - name: Install necessary Microsoft features
     win_feature:
       name: "{{ item }}"
       state: present
@@ -38,7 +38,7 @@
     - RSAT-AD-AdminCenter
     - RSAT-ADDS-Tools
     tags: base
-  - name: Ensure domain is created
+  - name: Create domain
     win_domain:
       dns_domain_name: "{{ domain_name }}"
       safe_mode_password: "{{ safe_mode_password }}"
@@ -53,7 +53,7 @@
     when: domain_creation.reboot_required
     tags: base
 
-  - name: Ensure xActiveDirectory PS DSC module is installed
+  - name: Install xActiveDirectory PS DSC module
     win_psmodule:
       name: xActiveDirectory
       state: present
