@@ -46,3 +46,14 @@ variable "private_key_path" {
   type        = string
   default     = "/home/user/.ssh/id_logger"
 }
+#Default local administrator username and password for all Windows VMs
+variable "windows_local_admin" {
+  description = "Local admin username for Windows VMs."
+  type        = string
+  default     = "andres"
+}
+variable "windows_local_admin_password" {
+  description = "Local admin password for Windows VMs."
+  type        = string
+  default     = "Iniestademivida123!"
+}

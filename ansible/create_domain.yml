@@ -8,9 +8,9 @@
   hosts: domain_controller
   gather_facts: no
   vars:
-    domain_name: ncisg.lab
+    domain_name: itisfine.lab
     domain_admin: domadmin
-    domain_admin_password: "Ncisglab123."
+    domain_admin_password: "Itisfine123."
     safe_mode_password: "Thisisthe000safepassword!!!"
 
   tasks: 
@@ -103,7 +103,7 @@
 
   # - name: Set domain root path (e.g. DC=xtof,DC=lab)
   #   set_fact:
-  #     # e.g. DC=ncisg,DC=lab
+  #     # e.g. DC=itisfine,DC=lab
   #     domain_root_path: DC={{ domain_name.split('.') | join(',DC=') }}
 
   # - name: Ensure domain groups exist

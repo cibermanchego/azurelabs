@@ -5,32 +5,32 @@
 resource "azurerm_virtual_network" "intnet" {
   name                = "internal_network"
   address_space       = ["192.168.0.0/16"]
-  location            = azurerm_resource_group.ncisglab.location
-  resource_group_name = azurerm_resource_group.ncisglab.name
+  location            = azurerm_resource_group.itisfine.location
+  resource_group_name = azurerm_resource_group.itisfine.name
 }
 
 # Subnet for servers 192.168.10.0/24
-resource "azurerm_subnet" "ncisglab_servers" {
+resource "azurerm_subnet" "itisfine_servers" {
   name                 = "subnet_servers"
-  resource_group_name  = azurerm_resource_group.ncisglab.name
+  resource_group_name  = azurerm_resource_group.itisfine.name
   virtual_network_name = azurerm_virtual_network.intnet.name
   address_prefixes       = ["192.168.10.0/24"]
 }
 
 # Subnet for Workstations 192.168.20.0/24
-resource "azurerm_subnet" "ncisglab_workstations" {
+resource "azurerm_subnet" "itisfine_workstations" {
   name                 = "subnet_workstations"
-  resource_group_name  = azurerm_resource_group.ncisglab.name
+  resource_group_name  = azurerm_resource_group.itisfine.name
   virtual_network_name = azurerm_virtual_network.intnet.name
   address_prefixes       = ["192.168.20.0/24"]
 }
 
 
 # Network security group for Server subnet
-resource "azurerm_network_security_group" "ncisglab_servers_nsg" {
-  name                = "NCISGLab_servers_nsg"
+resource "azurerm_network_security_group" "itisfine_servers_nsg" {
+  name                = "itisfine_servers_nsg"
   location = var.region
-  resource_group_name  = azurerm_resource_group.ncisglab.name
+  resource_group_name  = azurerm_resource_group.itisfine.name
 
   # SSH access
   security_rule {
@@ -128,16 +128,16 @@ resource "azurerm_network_security_group" "ncisglab_servers_nsg" {
 }
 
 # NSG association to servers subnet
-resource "azurerm_subnet_network_security_group_association" "ncisglab_servers_nsga" {
-  subnet_id                 = azurerm_subnet.ncisglab_servers.id
-  network_security_group_id = azurerm_network_security_group.ncisglab_servers_nsg.id
+resource "azurerm_subnet_network_security_group_association" "itisfine_servers_nsga" {
+  subnet_id                 = azurerm_subnet.itisfine_servers.id
+  network_security_group_id = azurerm_network_security_group.itisfine_servers_nsg.id
 }
 
 # Network security group for Workstations subnet
-resource "azurerm_network_security_group" "ncisglab_workstations_nsg" {
-  name                = "NCISGLab_workstations_nsg"
+resource "azurerm_network_security_group" "itisfine_workstations_nsg" {
+  name                = "itisfine_workstations_nsg"
   location = var.region
-  resource_group_name  = azurerm_resource_group.ncisglab.name
+  resource_group_name  = azurerm_resource_group.itisfine.name
 
 # SSH access
   security_rule {
@@ -195,18 +195,18 @@ resource "azurerm_network_security_group" "ncisglab_workstations_nsg" {
 }
 
 # NSG association to servers subnet
-resource "azurerm_subnet_network_security_group_association" "ncisglab_workstations_nsga" {
-  subnet_id                 = azurerm_subnet.ncisglab_workstations.id
-  network_security_group_id = azurerm_network_security_group.ncisglab_workstations_nsg.id
+resource "azurerm_subnet_network_security_group_association" "itisfine_workstations_nsga" {
+  subnet_id                 = azurerm_subnet.itisfine_workstations.id
+  network_security_group_id = azurerm_network_security_group.itisfine_workstations_nsg.id
 }
 
 
 
 # # Network security group for logger machine
-# resource "azurerm_network_security_group" "ncisglab_logger_nsg" {
-#   name                = "NCISGLab_logger_nsg"
+# resource "azurerm_network_security_group" "itisfine_logger_nsg" {
+#   name                = "itisfine_logger_nsg"
 #   location = var.region
-#   resource_group_name  = azurerm_resource_group.ncisglab.name
+#   resource_group_name  = azurerm_resource_group.itisfine.name
 
 #   # SSH access
 #   security_rule {

@@ -4,7 +4,7 @@
 resource "azurerm_public_ip" "logger_public_ip" {
   name                = "logger-public-ip"
   location            = var.region
-  resource_group_name = azurerm_resource_group.ncisglab.name
+  resource_group_name = azurerm_resource_group.itisfine.name
   allocation_method   = "Static"
 
   tags = {
@@ -16,11 +16,11 @@ resource "azurerm_public_ip" "logger_public_ip" {
 resource "azurerm_network_interface" "logger_nic" {
   name = "logger-nic"
   location = var.region
-  resource_group_name  = azurerm_resource_group.ncisglab.name
+  resource_group_name  = azurerm_resource_group.itisfine.name
   #IP ADDRESS: 192.168.10.30
   ip_configuration {
     name                          = "Logger-NicConfiguration"
-    subnet_id                     = azurerm_subnet.ncisglab_servers.id
+    subnet_id                     = azurerm_subnet.itisfine_servers.id
     private_ip_address_allocation = "Static"
     private_ip_address            = cidrhost(var.servers_subnet_cidr, 30) # servers_subnet_cidr variable defined at vars.tf
     public_ip_address_id          = azurerm_public_ip.logger_public_ip.id
@@ -35,8 +35,8 @@ resource "azurerm_network_interface" "logger_nic" {
 #virtual machine resource
 resource "azurerm_virtual_machine" "logger" {
   name                  = "logger"
-  location              = azurerm_resource_group.ncisglab.location
-  resource_group_name   = azurerm_resource_group.ncisglab.name
+  location              = azurerm_resource_group.itisfine.location
+  resource_group_name   = azurerm_resource_group.itisfine.name
   network_interface_ids = [azurerm_network_interface.logger_nic.id]
   #
   vm_size               = "Standard_DS1_v2"
@@ -71,7 +71,7 @@ resource "azurerm_virtual_machine" "logger" {
     # Username set in vars.tf
     admin_username = var.logger_admin_user
     #password generated before
-    admin_password = "Iniestademivida123!"
+    admin_password = var.windows_local_admin_password
   }
   #Enable SSH
   os_profile_linux_config {

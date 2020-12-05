@@ -1,11 +1,11 @@
 ---
 - name: Join computer to domain
-  hosts: workstations
+  hosts: workstations, collector
   gather_facts: yes
   vars:
-    domain_name: ncisg.lab
+    domain_name: itisfine.lab
     domain_admin: domadmin
-    domain_admin_password: "Ncisglab123."
+    domain_admin_password: "Itisfine123."
     safe_mode_password: "Thisisthe000safepassword!!!"
 
   tasks: 
@@ -14,7 +14,7 @@
       adapter_names: '*'
       ipv4_addresses: "{{ hostvars[groups['domain_controller'][0]].private_ipv4_addresses }}" # Get IP address from dynamic inventory
 
-  - name: Ensure workstation is domain-joined
+  - name: Ensure computer is domain-joined
     win_domain_membership:
       dns_domain_name: "{{ domain_name }}"
       # hostname: "{{ hostvars[groups['workstations'][0]].name }}" #Get name for hostname from VM name in inventory
@@ -23,7 +23,7 @@
       domain_admin_password: "{{ domain_admin_password }}"
       state: domain
     register: domain_state
-  - name: Reboot machine if it has just joined the domain
+  - name: Reboot computer if it has just joined the domain
     win_reboot: 
       pre_reboot_delay: 15
       reboot_timeout: 150
