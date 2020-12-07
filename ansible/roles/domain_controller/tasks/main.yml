@@ -1,0 +1,61 @@
+---
+- name: Include domain configuration file
+  include_vars:
+    file: ./domain.yml
+    name: domain
+#Set DNS to localhost and google
+- name: Set DNS Address
+  win_dns_client:
+    adapter_names: '*'
+    ipv4_addresses:
+      - 127.0.0.1
+      - 1.1.1.1
+    log_path: C:\dns_log.txt
+
+- name: Install necessary Microsoft features
+  win_feature:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  # Available features can be listed using Get-WindowsFeature
+  - AD-Domain-Services
+  - RSAT-AD-AdminCenter
+  - RSAT-ADDS-Tools
+  tags: base
+- name: Create domain
+  win_domain:
+    dns_domain_name: "{{ domain.domain_name }}"
+    safe_mode_password: "{{ domain.safe_mode_password }}"
+  register: domain_creation
+  tags: base
+
+- name: Reboot if domain was just created
+  win_reboot:
+    pre_reboot_delay: 15
+    reboot_timeout: 600
+    post_reboot_delay: 60
+  when: domain_creation.reboot_required
+  tags: base
+
+- name: Install xActiveDirectory PS DSC module
+  win_psmodule:
+    name: xActiveDirectory
+    state: present
+  tags: base
+
+- name: Ensure domain is available
+  win_dsc:
+    resource_name: xWaitForADDomain
+    DomainName: "{{ domain.domain_name }}"
+    RetryCount: 100
+    RetryIntervalSec: 10
+
+- name: Add domain admin
+  win_domain_user:
+    name: "{{ domain.domain_admin.username }}"
+    firstname: Juan
+    surname: Pincho
+    password: "{{ domain.domain_admin.password }}"
+    state: present
+    groups:
+      - Domain Admins

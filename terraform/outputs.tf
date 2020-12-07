@@ -26,6 +26,7 @@ output "wef_public_ip" {
 
 output "what_next" {
   value = <<EOF
+
 #############################
 ###  CREDENTIALS DETAILS  ###
 #############################
@@ -34,7 +35,7 @@ output "what_next" {
 - Local admin all windows: ${var.windows_local_admin} / ${var.windows_local_admin_password}
 - RDP Domain Controller: cmdkey /generic:"${azurerm_public_ip.dc_public_ip.ip_address}" /user:"${var.windows_local_admin}" /pass:"${var.windows_local_admin_password}"
                         mstsc /v:${azurerm_public_ip.dc_public_ip.ip_address}
-- Login to logger box: ssh -i ~\.ssh\id_logger loggeradmin@logger_plublic_ip
+- Login to logger box: ssh -i ${var.private_key_path} loggeradmin@${azurerm_public_ip.logger_public_ip.ip_address}
 
 
 EOF

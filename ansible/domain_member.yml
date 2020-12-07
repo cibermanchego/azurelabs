@@ -1,0 +1,5 @@
+---
+- hosts: workstations, collector
+  
+  roles:
+    - domain_member

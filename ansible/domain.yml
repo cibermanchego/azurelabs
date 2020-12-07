@@ -1,0 +1,32 @@
+# FQDN of your domain
+domain_name: itisfine.lab
+
+#Safe mode password
+safe_mode_password: Thisisthe000safepassword!!!
+# Credentials of the initial domain admin
+domain_admin:
+  username: domadmin
+  password: Itisfine123.
+
+organizational_units: {}
+
+# Domain users - by default, password := username
+users:
+- username: andres
+- username: chris
+- username: brett
+  password: Brett123
+- username: alexis
+
+# Domain groups
+groups:
+- dn: CN=Labusers,CN=Users
+  members: [andres, chris]
+
+# Credentials of the local admin
+default_local_admin:
+  username: localadmin
+  password: Itisfinelocal123!
+
+# Should the Windows firewall be enabled?
+enable_windows_firewall: no

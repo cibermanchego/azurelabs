@@ -1,0 +1,24 @@
+---
+- name: Include domain configuration file
+  include_vars:
+    file: ./domain.yml
+    name: domain 
+- name: Set DC as DNS server
+  win_dns_client:
+    adapter_names: '*'
+    ipv4_addresses: "{{ hostvars[groups['domain_controller'][0]].private_ipv4_addresses }}" # Get IP address from dynamic inventory
+
+- name: Ensure computer is domain-joined
+  win_domain_membership:
+    dns_domain_name: "{{ domain.domain_name }}"
+    hostname: "{{ ansible_env.COMPUTERNAME }}" #Get name for hostname from facts
+    domain_admin_user: "{{ domain.domain_admin.username }}@{{ domain.domain_name }}"
+    domain_admin_password: "{{ domain.domain_admin.password }}"
+    state: domain
+  register: domain_state
+- name: Reboot computer if it has just joined the domain
+  win_reboot: 
+    pre_reboot_delay: 15
+    reboot_timeout: 150
+    post_reboot_delay: 30
+  when: domain_state.reboot_required
