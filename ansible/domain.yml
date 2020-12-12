@@ -1,5 +1,6 @@
 # FQDN of your domain
 domain_name: itisfine.lab
+domain_root_path: "dc=itisfine,dc=lab"
 
 #Safe mode password
 safe_mode_password: Thisisthe000safepassword!!!
@@ -8,7 +9,7 @@ domain_admin:
   username: domadmin
   password: Itisfine123.
 
-organizational_units: {}
+organizational_units: {"Servers", "Workstations"}
 
 # Domain users - by default, password := username
 users:

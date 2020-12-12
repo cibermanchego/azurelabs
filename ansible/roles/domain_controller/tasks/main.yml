@@ -59,3 +59,34 @@
     state: present
     groups:
       - Domain Admins
+# Copy GPOs and other resources to domain controller
+- name: Copy Scripts and GPOs
+  win_copy:
+    src: ./resources/
+    dest: C:\resources
+# Create OUs for Servers and WSs
+- name: Create OUs
+  win_dsc:
+    resource_name: xADOrganizationalUnit
+    Name: "{{ item }}"
+    Path: "{{ domain.domain_root_path }}"
+    #Path: "dc=itisfine,dc=lab"
+    ProtectedFromAccidentalDeletion: no
+  with_items: 
+    - Servers
+    - Workstations
+
+- name: Configure Auditing Policy GPO
+  win_shell: .\\configure-AuditingPolicyGPOs.ps1
+  args:
+    chdir: 'c:\resources\scripts'
+  register: audit_policy
+
+- debug: msg="{{ audit_policy.stdout_lines }}"
+  when: audit_policy.stdout_lines is defined
+
+- name: Configure WEF GPO
+  win_shell: .\\configure-wef-gpo.ps1
+  args:
+    chdir: 'c:\resources\scripts'
+  register: wef_gpo

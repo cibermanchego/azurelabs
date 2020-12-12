@@ -1,0 +1,2 @@
+sysmon_binary_path: C:\resources\sysmon\Sysmon64.exe
+sysmon_config_path: C:\resources\sysmon\sysmonconfig.xml

@@ -1,0 +1,9 @@
+- name: Copy sysmon binary and configuration
+  #gather_facts: no
+  win_copy:
+    src: ./resources/sysmon/
+    dest: C:\resources\sysmon
+
+- name: Install Sysmon
+  win_command: "{{ sysmon_binary_path }} -i {{ sysmon_config_path }} -accepteula"
+  
