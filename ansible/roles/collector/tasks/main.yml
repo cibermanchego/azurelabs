@@ -1,0 +1,48 @@
+# Copy GPOs and other resources to domain controller
+- name: Copy WEF resources
+  win_copy:
+    src: ./resources/wef/
+    dest: C:\resources\wef
+
+- name: Create Custom Event Channel
+  win_shell: |
+    Copy-Item c:\resources\wef\windows-event-channels\CustomEventChannels.* "$env:windir\system32"
+    wevtutil im "c:\windows\system32\CustomEventChannels.man"
+    $xml = wevtutil el | select-string -pattern "WEC"
+    foreach ($subscription in $xml) { wevtutil sl $subscription /ms:4294967296 }
+
+- name: Start Windows Event Collector service
+  win_service:
+    name: Wecsvc
+    state: started
+    start_mode: auto
+
+# - name: Add Network Service to Event Logs Readers local group
+#   win_group_membership:
+#     name: Event Log Readers
+#     members: Network Service
+
+#     
+- name: Create and Enable Event Subscriptions
+  win_shell: |
+    for /r %i in (*.xml) do wecutil cs %i
+    for /r %i in (*.xml) do wecutil ss %~ni /e:true
+    wecutil qc /q:true
+  args:
+    chdir: c:\resources\wef\wef-subscriptions
+    executable: cmd
+
+# https://support.microsoft.com/en-us/help/4494462/events-not-forwarded-if-the-collector-runs-windows-server
+# Apparently needed if WEC server and client are not in the same subnet
+# - win_command: netsh http show urlacl
+#   register: netsh_urlacl
+
+# - name: Remove ACL permissions on WEC url
+#   win_command: 'netsh http delete urlacl url=http://+:5985/wsman/'
+#   when: "('http://+:5985/wsman/' in netsh_urlacl.stdout and 'Wecsvc' not in netsh_urlacl.stdout)"
+#   register: netsh_urlacl_remove
+
+# - name: Fix ACL permissions
+#   win_command: 'netsh http add urlacl url=http://+:5985/wsman/ sddl=D:(A;;GX;;;S-1-5-80-569256582-2953403351-2909559716-1301513147-412116970)(A;;GX;;;S-1-5-80-4059739203-877974739-1245631912-527174227-2996563517)'
+#   when: netsh_urlacl_remove.changed or 'http://+:5985/wsman/' not in netsh_urlacl.stdout
+#   notify: restart wec service
