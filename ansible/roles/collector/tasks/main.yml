@@ -3,6 +3,8 @@
   win_copy:
     src: ./resources/wef/
     dest: C:\resources\wef
+  tags:
+    - resources
 
 - name: Create Custom Event Channel
   win_shell: |
@@ -31,6 +33,18 @@
   args:
     chdir: c:\resources\wef\wef-subscriptions
     executable: cmd
+
+# Install oneliner with IP from dynamic inventory:
+#     Start-Process -FilePath "c:\windows\system32\msiexec.exe" -ArgumentList '/i', "$splunk_file", 'RECEIVING_INDEXER="{{ hostvars[groups['domain_controller'][0]].private_ipv4_addresses }}" WINEVENTLOG_SEC_ENABLE=0 WINEVENTLOG_SYS_ENABLE=0 WINEVENTLOG_APP_ENABLE=0 AGREETOLICENSE=Yes SERVICESTARTTYPE=AUTO LAUNCHSPLUNK=1 SPLUNKPASSWORD=splunk123. /quiet' -Wait
+- name: Install Splunk UF
+  win_shell: |
+    $splunk_file = "C:\resources\wef\splunk\splunkforwarder-8.1.1.msi"
+    $inputs = "C:\resources\wef\splunk\inputs.conf"
+    [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
+    (New-Object System.Net.WebClient).DownloadFile('https://www.splunk.com/bin/splunk/DownloadActivityServlet?architecture=x86_64&platform=windows&version=8.1.1&product=universalforwarder&filename=splunkforwarder-8.1.1-08187535c166-x64-release.msi&wget=true', $splunk_file)
+    Start-Process -FilePath "c:\windows\system32\msiexec.exe" -ArgumentList '/i', "$splunk_file", 'RECEIVING_INDEXER="192.168.10.30" WINEVENTLOG_SEC_ENABLE=0 WINEVENTLOG_SYS_ENABLE=0 WINEVENTLOG_APP_ENABLE=0 AGREETOLICENSE=Yes SERVICESTARTTYPE=AUTO LAUNCHSPLUNK=1 SPLUNKPASSWORD=splunk123. /quiet' -Wait
+    Copy-Item $inputs "C:\Program Files\SplunkUniversalForwarder\etc\system\local"
+  notify: Restart Splunk
 
 # https://support.microsoft.com/en-us/help/4494462/events-not-forwarded-if-the-collector-runs-windows-server
 # Apparently needed if WEC server and client are not in the same subnet
