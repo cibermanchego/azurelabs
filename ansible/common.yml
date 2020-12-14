@@ -1,0 +1,5 @@
+---
+- hosts: domain_controller, collector, workstations
+  
+  roles:
+    - common_windows
